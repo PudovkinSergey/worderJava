@@ -1,0 +1,1 @@
+insert into wordtranslation(OriginalWord,Translation) values ('hole','дыра')
