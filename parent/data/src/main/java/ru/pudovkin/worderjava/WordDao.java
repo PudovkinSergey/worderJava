@@ -7,7 +7,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 
-public class WordDao implements Dao<WordTranslation> {
+/**
+ *
+ */
+public class WordDao {
 
 
     /**
@@ -15,19 +18,19 @@ public class WordDao implements Dao<WordTranslation> {
      * @param id
      * @return if id is valid Optional will contain word obj, if not - empty Optional obj.
      */
-    @Override
-    public Optional<WordTranslation> get(int id) {
+    public static Optional<WordTranslation> read(int id) {
+
         ConnectionPool pool=ConnectionPool.getInstance();
         Connection connection=pool.getConnection();
         PreparedStatement preparedStatement = null;
         String preparedGetSQL="SELECT OriginalWord,Translation FROM wordtranslation WHERE WordID =?";
-
+        ResultSet resultSet=null;
         try{
 
             preparedStatement = connection.prepareStatement(preparedGetSQL);
             preparedStatement.setString(1,String.valueOf(id));
-            ResultSet wordSet = preparedStatement.executeQuery();
-            WordTranslation wordTranslation =new WordTranslation(wordSet.getString(1),wordSet.getString(2));
+            resultSet = preparedStatement.executeQuery();
+            WordTranslation wordTranslation =new WordTranslation(resultSet.getString(1),resultSet.getString(2));
             Optional<WordTranslation> optionalWordTranslation= Optional.ofNullable(wordTranslation);
             return optionalWordTranslation;
         }catch (SQLException e){
@@ -39,16 +42,16 @@ public class WordDao implements Dao<WordTranslation> {
         }
         finally {
             DBUtil.closePreparedStatement(preparedStatement);
+            DBUtil.closeResultSet(resultSet);
             pool.freeConnection(connection);
         }
     }
 
     /**
      * Gets all words from DB.
-     * @return List of WordTranslation objects
+     * @return List of WordTranslation objects.
      */
-    @Override
-    public List<WordTranslation> getAll() {
+    public static List<WordTranslation> readAll() {
         ConnectionPool pool=ConnectionPool.getInstance();
         Connection connection=pool.getConnection();
         Statement statement = null;
@@ -77,19 +80,99 @@ public class WordDao implements Dao<WordTranslation> {
 
     }
 
-    @Override
-    public void save(WordTranslation wordTranslation) {
-       // words.add(wordTranslation);
+    /**
+     *  Saves word to DB.
+     * @param wordTranslation
+     */
+    public static void create(WordTranslation wordTranslation) {
+       ConnectionPool pool= ConnectionPool.getInstance();
+       Connection connection = pool.getConnection();
+       PreparedStatement preparedStatement = null;
+
+       String query= "INSERT INTO wordtranslation (OriginalWord,Translation) VALUES (?,?)";
+
+        try {
+            preparedStatement=connection.prepareStatement(query);
+            preparedStatement.setString(1,wordTranslation.getWord());
+            preparedStatement.setString(2,wordTranslation.getTranslation());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            DBUtil.closePreparedStatement(preparedStatement);
+            pool.freeConnection(connection);
+        }
     }
 
-    @Override
-    public void update(WordTranslation wordTranslation, String[] params) {
-        wordTranslation.setWord(Objects.requireNonNull(params[0]));
-        wordTranslation.setTranslation(Objects.requireNonNull(params[1]));
+    /**
+     * Update wordTranslation with given id.
+     * @param wordTranslation
+     * @param params - WordId.
+     */
+    public static void update(WordTranslation wordTranslation, String[] params) {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement preparedStatement=null;
+        String query = "UPDATE wordtranslation SET OriginalWord=?, Translation=? where WordID=?";
+
+        try {
+            preparedStatement=connection.prepareStatement(query);
+            preparedStatement.setString(1,wordTranslation.getWord());
+            preparedStatement.setString(2,wordTranslation.getTranslation());
+            preparedStatement.setString(3,params[0]);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DBUtil.closePreparedStatement(preparedStatement);
+            pool.freeConnection(connection);
+        }
     }
 
-    @Override
-    public void delete(WordTranslation wordTranslation) {
-       // words.remove(wordTranslation);
+    /**
+     * Delete word from DB.
+     * @param wordTranslation
+     */
+    public static void delete(WordTranslation wordTranslation) {
+       ConnectionPool pool= ConnectionPool.getInstance();
+       Connection connection= pool.getConnection();
+       PreparedStatement preparedStatement=null;
+       String query= "DELETE from wordtranslation where OriginalWord =?";
+
+        try {
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1,wordTranslation.getWord());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+        DBUtil.closePreparedStatement(preparedStatement);
+        pool.freeConnection(connection);
+        }
+    }
+
+    public static boolean wordExists(String word){
+        ConnectionPool pool= ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement preparedStatement=null;
+        ResultSet resultSet=null;
+
+        String query="SELECT OriginalWord from wordtranslation where OriginalWord=?";
+
+        try {
+            preparedStatement=connection.prepareStatement(query);
+            preparedStatement.setString(1,word);
+            resultSet=preparedStatement.executeQuery();
+            return resultSet.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            DBUtil.closePreparedStatement(preparedStatement);
+            DBUtil.closeResultSet(resultSet);
+            pool.freeConnection(connection);
+        }
+
     }
 }

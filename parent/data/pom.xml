@@ -23,7 +23,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-jdbc</artifactId>
+            <artifactId>tomcat-dbcp</artifactId>
             <version>9.0.14</version>
         </dependency>
     </dependencies>

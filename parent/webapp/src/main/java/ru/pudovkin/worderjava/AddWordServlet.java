@@ -24,7 +24,8 @@ public class AddWordServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
         String url="/addword.jsp";
 
         // get current action
@@ -42,6 +43,7 @@ public class AddWordServlet extends HttpServlet {
             // get parameters from request
             String word = request.getParameter("word");
             String translation = request.getParameter("translation");
+            System.out.println(translation);
 
             // store data in wordTranslation obj
             WordTranslation wordTranslation= new WordTranslation(word,translation);
@@ -49,13 +51,22 @@ public class AddWordServlet extends HttpServlet {
             // validate parameters
             String message;
             if (word==null||translation==null||word.isEmpty()||translation.isEmpty()){
+
                 message= "Please fill out all text boxes";
                 url="/addword.jsp";
             }
             else {
-                message = "Thanks for adding word, try more!";
-                url="/index.jsp";
-                //wordTranslationDB.insert(wordTranslation);
+                if (WordDao.wordExists(word) ){
+                    message="This word already in list. Please try another.";
+                    url="/addword.jsp";
+                }
+                else {
+                    message = "Thanks for adding word, try more!";
+                    url="/index.jsp";
+                    WordDao.create(wordTranslation);
+                }
+
+
             }
 
             request.setAttribute("wordTranslation",wordTranslation);

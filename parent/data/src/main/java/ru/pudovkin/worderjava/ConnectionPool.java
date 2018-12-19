@@ -12,7 +12,7 @@ public class ConnectionPool {
     private ConnectionPool(){
         try {
             InitialContext ic = new InitialContext();
-            dataSource = (DataSource) ic.lookup("java:/comp/env/jdbc/pudov_test");
+            dataSource = (DataSource) ic.lookup("java:/comp/env/jdbc/pudov");
         }
         catch (NamingException e){
             System.out.println(e);
