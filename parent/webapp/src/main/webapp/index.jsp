@@ -6,7 +6,7 @@
 </head>
 <body>
 
-<form action="wordlist.jsp" method="get">
+<form action="wordlist" method="get">
     <input type="submit" value="Show list of all words" />
     <label>&nbsp;</label>
 </form>
