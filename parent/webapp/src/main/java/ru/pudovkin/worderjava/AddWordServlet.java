@@ -2,7 +2,7 @@ package ru.pudovkin.worderjava;
 
 
 
-import javax.servlet.RequestDispatcher;
+import org.apache.log4j.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -15,6 +15,7 @@ import java.io.IOException;
  */
 @WebServlet(name = "AddWordServlet",urlPatterns ="/addword")
 public class AddWordServlet extends HttpServlet {
+    private Logger logger = Logger.getLogger(AddWordServlet.class);
 
      /**
      * Process data, received from the input boxes.
@@ -27,6 +28,7 @@ public class AddWordServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         String url="/addword.jsp";
@@ -42,7 +44,7 @@ public class AddWordServlet extends HttpServlet {
             url = "/addword.jsp";
         }
         else if (action.equals("add")){
-
+            logger.info("Выполняется POST запрос на странице /addword.");
             // get parameters from request
             String word = request.getParameter("word");
             String translation = request.getParameter("translation");
@@ -52,8 +54,9 @@ public class AddWordServlet extends HttpServlet {
 
             // validate parameters
             String message;
+            logger.info("Выполняется проверка параметров запроса.");
             if (word==null||translation==null||word.isEmpty()||translation.isEmpty()){
-
+                logger.info("Какое то из полей оказалось пустым.");
                 message= "Please fill out all text boxes";
                 url="/addword.jsp";
             }
@@ -61,11 +64,13 @@ public class AddWordServlet extends HttpServlet {
                 if (WordDao.wordExists(word) ){
                     message="This word already in list. Please try another.";
                     url="/addword.jsp";
+                    logger.info("Слово - "+word+" уже есть в словаре.");
                 }
                 else {
                     message = "Thanks for adding word, try more!";
                     url="/index.jsp";
                     WordDao.create(wordTranslation);
+                    logger.info("Перевод - "+wordTranslation+" успещно добавлен");
                 }
 
 

@@ -1,22 +1,26 @@
 package ru.pudovkin.worderjava;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import java.io.Serializable;
 
 /**
  * Java Bean class for storing words and translations.
  */
 public class WordTranslation implements Serializable {
+    private static final Logger logger=Logger.getLogger(WordTranslation.class);
 
     private String word;
     private String translation;
 
     public WordTranslation(){
+        logger.info("Создан пустой перевод");
         this.word ="";
         this.translation="";
     }
     public WordTranslation(String word, String translation) {
-
-
+        logger.info("Добавлен перевод: "+ word+" - "+translation);
         this.word = word;
         this.translation = translation;
     }
@@ -37,7 +41,7 @@ public class WordTranslation implements Serializable {
     }
     @Override
     public String toString(){
-        return this.getWord()+this.getTranslation();
+        return this.getWord()+" "+this.getTranslation();
     }
     @Override
     public boolean equals(Object o){

@@ -1,5 +1,11 @@
 package ru.pudovkin.worderjava;
 
+
+
+
+import org.apache.log4j.Logger;
+
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +18,7 @@ import java.util.Optional;
 public class WordDao {
 
 
+    private static Logger logger= Logger.getLogger(WordDao.class);
     /**
      * Get element from DB by id
      * @param id
@@ -55,6 +62,7 @@ public class WordDao {
         Connection connection=pool.getConnection();
         Statement statement = null;
         ResultSet words=null;
+        logger.info("Попытка считать получить все переводы из базы данных.");
         try{
             statement=connection.createStatement();
             words=statement.executeQuery("SELECT * FROM wordtranslation");
@@ -63,9 +71,11 @@ public class WordDao {
                 wordList.add(new WordTranslation(words.getString("OriginalWord"),
                         words.getString("Translation")));
             }
+            logger.info("Успешно получили все переводы из базы данных.");
             return wordList;
 
         }catch (SQLException e){
+            logger.info("Произошла ошибка чтения данных из базы данных.");
             for (Throwable t:e){
                 t.printStackTrace();
             }
@@ -91,11 +101,14 @@ public class WordDao {
        String query= "INSERT INTO wordtranslation (OriginalWord,Translation) VALUES (?,?)";
 
         try {
+            logger.info("Пытаемся создать запись с данными: "+wordTranslation+" в базе данных.");
             preparedStatement=connection.prepareStatement(query);
             preparedStatement.setString(1,wordTranslation.getWord());
             preparedStatement.setString(2,wordTranslation.getTranslation());
             preparedStatement.executeUpdate();
+            logger.info("Запись: "+wordTranslation+" успешно создана.");
         } catch (SQLException e) {
+            logger.info("Ошбика создания записи: "+ wordTranslation+".");
             e.printStackTrace();
         }
         finally {
