@@ -10,12 +10,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-
+/**
+ * Servlet class for handling "/addword" page
+ */
 @WebServlet(name = "AddWordServlet",urlPatterns ="/addword")
 public class AddWordServlet extends HttpServlet {
 
-    /**
-     * Determines post request.
+     /**
+     * Process data, received from the input boxes.
+     * If data is correct, creates new row in database with this data.
      * @param request
      * @param response
      * @throws ServletException
@@ -43,7 +46,6 @@ public class AddWordServlet extends HttpServlet {
             // get parameters from request
             String word = request.getParameter("word");
             String translation = request.getParameter("translation");
-            System.out.println(translation);
 
             // store data in wordTranslation obj
             WordTranslation wordTranslation= new WordTranslation(word,translation);
@@ -76,6 +78,7 @@ public class AddWordServlet extends HttpServlet {
 
         getServletContext().getRequestDispatcher(url).forward(request,response);
     }
+
 
 
 }

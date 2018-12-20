@@ -10,8 +10,18 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
+/**
+ * Servlet class for handling /wordlist page.
+ */
 @WebServlet(name="WordListServlet",urlPatterns = {"/wordlist"})
 public class WordListServlet extends HttpServlet {
+    /**
+     * Collect all rows from DB and send them as attribute to show on page.
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
         List<WordTranslation> wordList =WordDao.readAll();

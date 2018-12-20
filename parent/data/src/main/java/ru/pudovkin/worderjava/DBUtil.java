@@ -5,7 +5,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+/**
+ * Helps working with DB objects.
+ */
 public class DBUtil {
+
+    /**
+     * Closes statement if opened.
+     * @param statement
+     */
     public static void closeStatement(Statement statement){
         try {
             if (statement!=null){
@@ -16,6 +24,11 @@ public class DBUtil {
             System.out.println(e);
         }
     }
+
+    /**
+     * Closes prepared statement if opened.
+     * @param statement
+     */
     public static void closePreparedStatement(PreparedStatement statement){
         try {
             if (statement!=null){
@@ -26,6 +39,11 @@ public class DBUtil {
             System.out.println(e);
         }
     }
+
+    /**
+     * Closes ResultSet if opened.
+     * @param resultSet
+     */
     public static void closeResultSet(ResultSet resultSet){
         try {
             if (resultSet!=null){

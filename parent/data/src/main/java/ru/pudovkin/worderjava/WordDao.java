@@ -7,7 +7,7 @@ import java.util.Optional;
 
 
 /**
- *
+ * Class with CRUD operations for DB.
  */
 public class WordDao {
 
@@ -113,7 +113,7 @@ public class WordDao {
         ConnectionPool pool = ConnectionPool.getInstance();
         Connection connection = pool.getConnection();
         PreparedStatement preparedStatement=null;
-        String query = "UPDATE wordtranslation SET OriginalWord=?, Translation=? where WordID=?";
+        String query = "UPDATE wordtranslation SET OriginalWord=?, Translation=? where WordID=?;";
 
         try {
             preparedStatement=connection.prepareStatement(query);
@@ -151,6 +151,11 @@ public class WordDao {
         }
     }
 
+    /**
+     * Check the existence of given word in DB.
+     * @param word
+     * @return
+     */
     public static boolean wordExists(String word){
         ConnectionPool pool= ConnectionPool.getInstance();
         Connection connection = pool.getConnection();

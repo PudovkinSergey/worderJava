@@ -6,9 +6,16 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+/**
+ * Class for creating Connection Pool to make DB connections.
+ */
 public class ConnectionPool {
     private static ConnectionPool pool = null;
     private static DataSource dataSource = null;
+
+    /**
+     * Constructor of connection pool for given DataSource.
+     */
     private ConnectionPool(){
         try {
             InitialContext ic = new InitialContext();
@@ -18,12 +25,14 @@ public class ConnectionPool {
             System.out.println(e);
         }
     }
+
     public static synchronized ConnectionPool getInstance(){
         if (pool==null){
             pool=new ConnectionPool();
         }
         return pool;
     }
+
     public Connection getConnection(){
         try {
          return dataSource.getConnection();
