@@ -20,21 +20,21 @@ public class WordDao {
 
     private static Logger logger= Logger.getLogger(WordDao.class);
     /**
-     * Get element from DB by id
-     * @param id
+     * Get translation from DB by word
+     * @param word
      * @return if id is valid Optional will contain word obj, if not - empty Optional obj.
      */
-    public static Optional<WordTranslation> read(int id) {
+    public static Optional<WordTranslation> read(String word) {
 
         ConnectionPool pool=ConnectionPool.getInstance();
         Connection connection=pool.getConnection();
         PreparedStatement preparedStatement = null;
-        String preparedGetSQL="SELECT OriginalWord,Translation FROM wordtranslation WHERE WordID =?";
+        String preparedGetSQL="SELECT OriginalWord,Translation FROM wordtranslation WHERE OriginalWord =?";
         ResultSet resultSet=null;
         try{
 
             preparedStatement = connection.prepareStatement(preparedGetSQL);
-            preparedStatement.setString(1,String.valueOf(id));
+            preparedStatement.setString(1,word);
             resultSet = preparedStatement.executeQuery();
             WordTranslation wordTranslation =new WordTranslation(resultSet.getString(1),resultSet.getString(2));
             Optional<WordTranslation> optionalWordTranslation= Optional.ofNullable(wordTranslation);
@@ -120,19 +120,18 @@ public class WordDao {
     /**
      * Update wordTranslation with given id.
      * @param wordTranslation
-     * @param params - WordId.
+     * @param params - word.
      */
     public static void update(WordTranslation wordTranslation, String[] params) {
         ConnectionPool pool = ConnectionPool.getInstance();
         Connection connection = pool.getConnection();
         PreparedStatement preparedStatement=null;
-        String query = "UPDATE wordtranslation SET OriginalWord=?, Translation=? where WordID=?;";
+        String query = "UPDATE wordtranslation SET Translation=? where OriginalWord=?;";
 
         try {
             preparedStatement=connection.prepareStatement(query);
-            preparedStatement.setString(1,wordTranslation.getWord());
-            preparedStatement.setString(2,wordTranslation.getTranslation());
-            preparedStatement.setString(3,params[0]);
+            preparedStatement.setString(1,wordTranslation.getTranslation());
+            preparedStatement.setString(2,wordTranslation.getWord());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
