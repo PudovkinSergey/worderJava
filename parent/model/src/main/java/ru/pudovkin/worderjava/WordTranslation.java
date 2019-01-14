@@ -59,4 +59,12 @@ public class WordTranslation implements Serializable {
         }
         return false;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 37;
+        hash=hash*17+this.getWord().hashCode();
+        hash= hash*17+this.getTranslation().hashCode();
+        return hash;
+    }
 }
