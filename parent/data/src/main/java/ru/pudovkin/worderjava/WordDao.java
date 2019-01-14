@@ -41,7 +41,7 @@ public class WordDao {
             return optionalWordTranslation;
         }catch (SQLException e){
             for (Throwable t:e){
-                t.printStackTrace();
+                logger.error("Исключение при чтениии из базы данных",t);
             }
             Optional<WordTranslation> optionalWordTranslation= Optional.ofNullable(null);
             return optionalWordTranslation;
@@ -75,7 +75,7 @@ public class WordDao {
             return wordList;
 
         }catch (SQLException e){
-            logger.info("Произошла ошибка чтения данных из базы данных.");
+            logger.error("Исключение при чтении из базы данных.",e);
             for (Throwable t:e){
                 t.printStackTrace();
             }
@@ -108,7 +108,7 @@ public class WordDao {
             preparedStatement.executeUpdate();
             logger.info("Запись: "+wordTranslation+" успешно создана.");
         } catch (SQLException e) {
-            logger.info("Ошбика создания записи: "+ wordTranslation+".");
+            logger.error("Исключение создания записи: "+ wordTranslation+".",e);
             e.printStackTrace();
         }
         finally {
@@ -134,7 +134,7 @@ public class WordDao {
             preparedStatement.setString(2,wordTranslation.getWord());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Исключение при попытке обновить запись в базе данных",e);
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);
             pool.freeConnection(connection);
@@ -156,7 +156,7 @@ public class WordDao {
             preparedStatement.setString(1,wordTranslation.getWord());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Исключение при попытке удалить запись из БД",e);
         } finally {
         DBUtil.closePreparedStatement(preparedStatement);
         pool.freeConnection(connection);
@@ -182,7 +182,7 @@ public class WordDao {
             resultSet=preparedStatement.executeQuery();
             return resultSet.next();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Исключение при проверке существования слова в базе данных",e);
             return false;
         } finally {
             DBUtil.closePreparedStatement(preparedStatement);

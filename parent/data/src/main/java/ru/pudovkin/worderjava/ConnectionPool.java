@@ -1,5 +1,7 @@
 package ru.pudovkin.worderjava;
 
+import org.apache.log4j.Logger;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -12,7 +14,7 @@ import java.sql.SQLException;
 public class ConnectionPool {
     private static ConnectionPool pool = null;
     private static DataSource dataSource = null;
-
+    private static Logger logger = Logger.getLogger(ConnectionPool.class);
     /**
      * Constructor of connection pool for given DataSource.
      */
@@ -22,7 +24,7 @@ public class ConnectionPool {
             dataSource = (DataSource) ic.lookup("java:/comp/env/jdbc/pudov");
         }
         catch (NamingException e){
-            System.out.println(e);
+            logger.error("Исключение при создании ConnectionPool",e);
         }
     }
 
@@ -38,7 +40,7 @@ public class ConnectionPool {
          return dataSource.getConnection();
         }
         catch (SQLException e){
-            System.out.println(e);
+            logger.error("Исключение при установке соединения с источником данных",e);
             return null;
         }
     }
@@ -46,7 +48,7 @@ public class ConnectionPool {
         try {
             connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Исключение при отключении соединения с источником данных",e);
         }
     }
 }

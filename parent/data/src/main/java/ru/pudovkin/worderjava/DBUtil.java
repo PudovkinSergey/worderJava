@@ -1,5 +1,7 @@
 package ru.pudovkin.worderjava;
 
+import org.apache.log4j.Logger;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,7 +11,7 @@ import java.sql.Statement;
  * Helps working with DB objects.
  */
 public class DBUtil {
-
+    private static Logger logger= Logger.getLogger(DBUtil.class);
     /**
      * Closes statement if opened.
      * @param statement
@@ -21,7 +23,7 @@ public class DBUtil {
             }
         }
         catch (SQLException e){
-            System.out.println(e);
+            logger.error("Исключение при закрытии statement в DBUtil",e);
         }
     }
 
@@ -36,7 +38,7 @@ public class DBUtil {
             }
         }
         catch (SQLException e){
-            System.out.println(e);
+            logger.error("Исключние при закрытии preparedStatement в DBUtil",e);
         }
     }
 
@@ -51,7 +53,7 @@ public class DBUtil {
             }
         }
         catch (SQLException e){
-            System.out.println(e);
+            logger.error("Исключение при закрытии Result set в DBUtil",e);
         }
     }
 }
