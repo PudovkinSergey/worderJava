@@ -54,7 +54,7 @@ public class WordTranslation implements Serializable {
 
         WordTranslation that = (WordTranslation) o;
 
-        if (word.equals(that.word)||translation.equals(that.translation)) {
+        if (word.equals(that.word)&&translation.equals(that.translation)) {
             return true;
         }
         return false;
@@ -62,9 +62,9 @@ public class WordTranslation implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 37;
-        hash=hash*17+this.getWord().hashCode();
-        hash= hash*17+this.getTranslation().hashCode();
+        int hash = 17;
+        hash=hash*31+this.getWord().hashCode();
+        hash= hash*31+this.getTranslation().hashCode();
         return hash;
     }
 }

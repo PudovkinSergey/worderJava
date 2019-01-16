@@ -4,6 +4,8 @@ import org.apache.commons.lang3.SerializationUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.meanbean.test.BeanTester;
+import org.meanbean.test.EqualsMethodTester;
+import org.meanbean.test.HashCodeMethodTester;
 
 import static org.junit.Assert.assertEquals;
 
@@ -27,5 +29,17 @@ public class WordTranslationTest {
     @Test
     public void getterAndSetterCorrectness() throws Exception {
         new BeanTester().testBean(WordTranslation.class);
+    }
+
+    @Test
+    public void equalsTest(){
+        EqualsMethodTester tester = new EqualsMethodTester();
+        tester.testEqualsMethod(WordTranslation.class);
+    }
+
+    @Test
+    public void hashCodeTest(){
+        HashCodeMethodTester tester = new HashCodeMethodTester();
+        tester.testHashCodeMethod(WordTranslation.class);
     }
 }
