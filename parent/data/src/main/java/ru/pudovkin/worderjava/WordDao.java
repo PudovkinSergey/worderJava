@@ -36,9 +36,17 @@ public class WordDao {
             preparedStatement = connection.prepareStatement(preparedGetSQL);
             preparedStatement.setString(1,word);
             resultSet = preparedStatement.executeQuery();
-            WordTranslation wordTranslation =new WordTranslation(resultSet.getString(1),resultSet.getString(2));
-            Optional<WordTranslation> optionalWordTranslation= Optional.ofNullable(wordTranslation);
-            return optionalWordTranslation;
+            logger.info("Попытка чтения из базы данных.");
+            if (resultSet.next()){
+                WordTranslation wordTranslation =new WordTranslation(resultSet.getString(1),resultSet.getString(2));
+                Optional<WordTranslation> optionalWordTranslation= Optional.ofNullable(wordTranslation);
+                return optionalWordTranslation;
+            }
+            else {
+                logger.info("Не нашлось данных по данному запросу.");
+                return Optional.empty();
+            }
+
         }catch (SQLException e){
             for (Throwable t:e){
                 logger.error("Исключение при чтениии из базы данных",t);
